@@ -1,0 +1,39 @@
+name = "plinken-api"
+main = "src/index.ts"
+compatibility_date = "2025-01-03"
+compatibility_flags = [ "nodejs_compat" ]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "plinken"
+database_id = "01fc5db7-2669-4b80-bd80-ce865f5fc087"
+
+
+[ai]
+binding = "AI"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[[r2_buckets]]
+binding = "PLINK_BUCKET_CLIENT"
+bucket_name = "plinken"
+
+[[kv_namespaces]]
+binding = "PLINKEN_KV"
+id = "a219f70fd89d420db21ee229c9e1f950"
+
+
+[[queues.producers]]
+ queue = "plinken-rag-in"
+ binding = "INQUEUE"
+
+[[queues.consumers]]
+  queue = "plinken-rag-in"
+  max_batch_size = 10
+  max_batch_timeout = 30
+  max_retries = 10
+  dead_letter_queue = "plinken-rag-in-dlq"
+
+
