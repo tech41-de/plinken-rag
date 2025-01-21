@@ -28,5 +28,5 @@ id = "a219f70fd89d420db21ee229c9e1f950"
  queue = "plinken-rag-in"
  binding = "INQUEUE"
 
-
-
+[[queues.consumers]]
+ queue = "plinken-rag-in"

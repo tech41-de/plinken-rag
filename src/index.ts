@@ -51,9 +51,27 @@ app.post('/0/ask', async (c: Context) => {
 
 app.post('/0/inqueue', async (c: Context) => {
 	const body = await c.req.json();
-	console.log(body);
 	await c.env.INQUEUE.send(body);
 	return c.json({ status: 'OK' });
 });
 
-export default app;
+// Queue listener function
+async function handleQueue(batch: MessageBatch<Env>, env: Env, ctx: ExecutionContext): Promise<void> {
+	for (const msg of batch.messages) {
+		console.log('Processing message:', msg.body);
+		// Handle each message in the batch
+		try {
+			// Perform some operation with the message
+			const processed = `inque isprocessing : ${JSON.stringify(msg.body)}`;
+			console.log(processed);
+			msg.ack();
+		} catch (error) {
+			console.error('Error processing message:', error);
+		}
+	}
+}
+
+export default {
+	fetch: app.fetch,
+	queue: handleQueue,
+};
