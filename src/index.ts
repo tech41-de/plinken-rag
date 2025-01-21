@@ -12,10 +12,12 @@
  */
 
 import { Context, Hono } from 'hono';
+import { env } from 'hono/adapter';
 import { cors } from 'hono/cors';
 
 export type Env = {
 	INQUEUE: Queue<any>;
+	AI: Ai;
 };
 
 const app = new Hono();
@@ -30,8 +32,28 @@ app.use(
 		credentials: true,
 	})
 );
+app.get('/', async (c: Context) => {
+	return Response.json({ status: 'OK' });
+});
+
+app.post('/0/ask', async (c: Context) => {
+	const body = await c.req.json();
+	const messages = [
+		{ role: 'system', content: body.system },
+		{
+			role: 'user',
+			content: body.user,
+		},
+	];
+	const answer = await c.env.AI.run('@cf/meta/llama-3.1-70b-instruct', { messages });
+	return Response.json({ status: 'OK', answer: JSON.stringify(answer) });
+});
 
 app.post('/0/inqueue', async (c: Context) => {
 	const body = await c.req.json();
+	console.log(body);
 	await c.env.INQUEUE.send(body);
+	return c.json({ status: 'OK' });
 });
+
+export default app;

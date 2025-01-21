@@ -1,4 +1,4 @@
-name = "plinken-api"
+name = "plinken-rag"
 main = "src/index.ts"
 compatibility_date = "2025-01-03"
 compatibility_flags = [ "nodejs_compat" ]
@@ -7,7 +7,6 @@ compatibility_flags = [ "nodejs_compat" ]
 binding = "DB"
 database_name = "plinken"
 database_id = "01fc5db7-2669-4b80-bd80-ce865f5fc087"
-
 
 [ai]
 binding = "AI"
@@ -29,11 +28,5 @@ id = "a219f70fd89d420db21ee229c9e1f950"
  queue = "plinken-rag-in"
  binding = "INQUEUE"
 
-[[queues.consumers]]
-  queue = "plinken-rag-in"
-  max_batch_size = 10
-  max_batch_timeout = 30
-  max_retries = 10
-  dead_letter_queue = "plinken-rag-in-dlq"
 
 
