@@ -23,6 +23,11 @@ bucket_name = "plinken"
 binding = "PLINKEN_KV"
 id = "a219f70fd89d420db21ee229c9e1f950"
 
+[[workflows]]
+name = "schedule-workflow"
+binding = "SCHEDULE_WORKFLOW"
+class_name = "ScheduleFlow"
+
 
 [[queues.producers]]
  queue = "plinken-rag-in"

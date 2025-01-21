@@ -14,10 +14,14 @@
 import { Context, Hono } from 'hono';
 import { env } from 'hono/adapter';
 import { cors } from 'hono/cors';
+import { WorkflowInput } from './Types';
+import { ScheduleFlow } from './ScheduleFlow';
 
 export type Env = {
 	INQUEUE: Queue<any>;
 	AI: Ai;
+	SCHEDULE_WORKFLOW: Workflow<WorkflowInput>;
+	DB: D1Database;
 };
 
 const app = new Hono();
@@ -56,18 +60,20 @@ app.post('/0/inqueue', async (c: Context) => {
 });
 
 // Queue listener function
-async function handleQueue(batch: MessageBatch<Env>, env: Env, ctx: ExecutionContext): Promise<void> {
+async function handleQueue(batch: MessageBatch<WorkflowInput>, env: Env, ctx: ExecutionContext): Promise<void> {
 	for (const msg of batch.messages) {
-		console.log('Processing message:', msg.body);
-		// Handle each message in the batch
 		try {
-			// Perform some operation with the message
-			const processed = `inque isprocessing : ${JSON.stringify(msg.body)}`;
-			console.log(processed);
-			msg.ack();
+			const data: WorkflowInput = msg.body;
+			switch (data.workflow) {
+				case 'schedule':
+					const newId = crypto.randomUUID();
+					const instance = await env.SCHEDULE_WORKFLOW.create({ id: newId, params: data });
+					break;
+			}
 		} catch (error) {
 			console.error('Error processing message:', error);
 		}
+		msg.ack();
 	}
 }
 
@@ -75,3 +81,4 @@ export default {
 	fetch: app.fetch,
 	queue: handleQueue,
 };
+export * from './ScheduleFlow';
